@@ -44,9 +44,7 @@ export function ListFooter({canAddThread, addThread}: { canAddThread: boolean; a
             </View>
         </View>
     )
-
 }
-
 
 export default function Modal() {
     const router = useRouter();
@@ -56,9 +54,11 @@ export default function Modal() {
     const insets = useSafeAreaInsets();
     const [replyOption, setReplyOption] = useState("Anyone");
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const [activeHashTagThreadId, setActiveHashTagThreadId] = useState<string | null>(null);
     const [isPosting, setIsPosting] = useState(false);
 
     const replyOptions = ["Anyone", "Profiles you follow", "Mentioned only"];
+
 
     const handleCancel = () => {
     };
@@ -73,6 +73,15 @@ export default function Modal() {
                 )
         ));
     };
+
+    const updateHashTagText = (id: string, hashtag: string) => {
+        setThreads((prevThreads) => prevThreads.map(threads => threads.id === id ? {...threads, hashtag} : threads));
+    }
+
+    const selectHashTag = (id: string, hashtag: string) => {
+        updateHashTagText(id, hashtag);
+        setActiveHashTagThreadId(null);
+    }
 
     const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0;
     const canPost = threads.every((thread) => thread.text.trim().length > 0);
@@ -99,6 +108,23 @@ export default function Modal() {
     const getMyLocation = async (id: string) => {
     };
 
+    const showHashTagDropDownList = (itemId: string) => {
+        const hashTagOptions = ["창업아이디어", "하이에나", "비행기표", "AI", "강의"];
+        return (
+            <View style={styles.dropdownContainer}>
+                {hashTagOptions.map((option) => (
+                    <Pressable
+                        key={option}
+                        style={styles.dropdownOption}
+                        onPress={() => selectHashTag(itemId, option)}   // ← 여기서 태그 선택
+                    >
+                        <Text style={styles.dropdownOptionText}>{option}</Text>
+                    </Pressable>
+                ))}
+            </View>
+        );
+    }
+
     const renderThreadItem = ({item, index}: { item: Thread; index: number; }) => (
         <View style={styles.threadContainer}>
             <View style={styles.avatarContainer}>
@@ -111,6 +137,7 @@ export default function Modal() {
             <View style={styles.contentContainer}>
                 <View style={styles.userInfoContainer}>
                     <Text style={styles.username}>zerohch0</Text>
+                    <Ionicons name="chevron-forward" size={16} color="#999"/>
                     {index > 0 && (
                         <TouchableOpacity
                             onPress={() => removeThread(item.id)}
@@ -120,7 +147,28 @@ export default function Modal() {
                             <Ionicons name="close-outline" size={20} color="#8e8e93"/>
                         </TouchableOpacity>
                     )}
+                    <TextInput
+                        style={styles.inputHashTag}
+                        placeholder={"Add a topic"}
+                        placeholderTextColor="#999"
+                        value={item.hashtag || ""}
+                        onFocus={() => {
+                            setActiveHashTagThreadId(item.id)
+                        }}
+                        onBlur={() => {
+                            setTimeout(() => {
+                                setActiveHashTagThreadId((cur) => cur === item.id ? null : cur);
+                            }, 150)
+                        }}
+                        onChangeText={(hashtag) => {
+                            updateHashTagText(item.id, hashtag)
+                        }}
+                    >
+                    </TextInput>
                 </View>
+
+                {activeHashTagThreadId === item.id && showHashTagDropDownList(item.id)}
+
                 <TextInput
                     style={styles.input}
                     placeholder={"What's new?"}
@@ -301,7 +349,7 @@ const styles = StyleSheet.create({
     },
     userInfoContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         alignItems: "center",
         marginBottom: 2,
     },
@@ -317,6 +365,13 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         minHeight: 24,
         lineHeight: 20,
+    },
+    inputHashTag: {
+        fontSize: 15,
+        paddingTop: 4,
+        paddingBottom: 8,
+        minHeight: 24,
+        lineHeight: 20
     },
     actionButtons: {
         flexDirection: "row",
