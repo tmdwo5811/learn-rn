@@ -111,7 +111,7 @@ export default function Modal() {
     const showHashTagDropDownList = (itemId: string) => {
         const hashTagOptions = ["창업아이디어", "하이에나", "비행기표", "AI", "강의"];
         return (
-            <View style={styles.dropdownContainer}>
+            <View style={[styles.dropdownContainer, styles.hashTagDropdownPosition]}>
                 {hashTagOptions.map((option) => (
                     <Pressable
                         key={option}
@@ -147,27 +147,27 @@ export default function Modal() {
                             <Ionicons name="close-outline" size={20} color="#8e8e93"/>
                         </TouchableOpacity>
                     )}
-                    <TextInput
-                        style={styles.inputHashTag}
-                        placeholder={"Add a topic"}
-                        placeholderTextColor="#999"
-                        value={item.hashtag || ""}
-                        onFocus={() => {
-                            setActiveHashTagThreadId(item.id)
-                        }}
-                        onBlur={() => {
-                            setTimeout(() => {
-                                setActiveHashTagThreadId((cur) => cur === item.id ? null : cur);
-                            }, 150)
-                        }}
-                        onChangeText={(hashtag) => {
-                            updateHashTagText(item.id, hashtag)
-                        }}
-                    >
-                    </TextInput>
+                    <View style={styles.hashTagInputWrapper}>
+                        <TextInput
+                            style={styles.inputHashTag}
+                            placeholder={"Add a topic"}
+                            placeholderTextColor="#999"
+                            value={item.hashtag || ""}
+                            onFocus={() => {
+                                setActiveHashTagThreadId(item.id)
+                            }}
+                            onBlur={() => {
+                                setTimeout(() => {
+                                    setActiveHashTagThreadId((cur) => cur === item.id ? null : cur);
+                                }, 150)
+                            }}
+                            onChangeText={(hashtag) => {
+                                updateHashTagText(item.id, hashtag)
+                            }}
+                        />
+                        {activeHashTagThreadId === item.id && showHashTagDropDownList(item.id)}
+                    </View>
                 </View>
-
-                {activeHashTagThreadId === item.id && showHashTagDropDownList(item.id)}
 
                 <TextInput
                     style={styles.input}
@@ -352,6 +352,22 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "center",
         marginBottom: 2,
+        position: "relative",
+        zIndex: 10,
+    },
+    hashTagInputWrapper: {
+        position: "relative",
+        flexShrink: 1,
+    },
+    hashTagDropdownPosition: {
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        minWidth: 180,
+        marginHorizontal: 0,
+        marginTop: 4,
+        zIndex: 20,
+        elevation: 20,
     },
     username: {
         fontWeight: "600",
