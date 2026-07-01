@@ -1,8 +1,10 @@
 import {Text, TouchableOpacity, View} from "react-native";
-import {useRouter} from "expo-router";
+import {usePathname, useRouter} from "expo-router";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const router = useRouter();
+    const pathName = usePathname();
+    console.log("pathName", pathName);
     return (
         <View style={{
             flex: 1,
@@ -11,13 +13,13 @@ export default function Index() {
         }}>
             <View>
                 <TouchableOpacity onPress={() => router.push(`/`)}>
-                    <Text>For you</Text>
+                    <Text style={{color: pathName ==="/" ?"red": "black"}}>For you</Text>
                 </TouchableOpacity>
             </View>
 
             <View>
                 <TouchableOpacity onPress={() => router.push(`/following`)}>
-                    <Text>Following</Text>
+                    <Text style={{color: pathName ==="/" ?"black": "red"}}>Following</Text>
                 </TouchableOpacity>
             </View>
             <View>
