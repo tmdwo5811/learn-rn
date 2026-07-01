@@ -22,27 +22,27 @@ export default function Index() {
             justifyContent: "center",
         }}>
             <View>
-                <TouchableOpacity onPress={() => router.push(`/activity`)}>
+                <TouchableOpacity onPress={() => router.replace(`/activity`)}>
                     <Text>All</Text>
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity onPress={() => router.push(`/activity/follows`)}>
+                <TouchableOpacity onPress={() => router.replace(`/activity/follows`)}>
                     <Text>Follows</Text>
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity onPress={() => router.push(`/activity/replies`)}>
+                <TouchableOpacity onPress={() => router.replace(`/activity/replies`)}>
                     <Text>Replies</Text>
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity onPress={() => router.push(`/activity/mentions`)}>
+                <TouchableOpacity onPress={() => router.replace(`/activity/mentions`)}>
                     <Text>Mentions</Text>
                 </TouchableOpacity>
             </View>
             <View>
-                <TouchableOpacity onPress={() => router.push(`/activity/quotes`)}>
+                <TouchableOpacity onPress={() => router.replace(`/activity/quotes`)}>
                     <Text>Quotes</Text>
                 </TouchableOpacity>
             </View>
