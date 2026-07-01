@@ -70,8 +70,15 @@ export default function TabLayout() {
                         <Ionicons
                             name="person-outline"
                             size={24}
-                            color={focused ? "black" : "gray"} />
-                    )
+                            color={focused ? "black" : "gray"}
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="(post)/[username]/post/[postId]"
+                options={{
+                    href: null
                 }}
             />
             <Tabs.Screen
