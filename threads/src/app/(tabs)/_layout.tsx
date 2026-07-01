@@ -1,7 +1,45 @@
 import { Tabs, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
-import {Fragment, useState} from "react";
-import {Modal, View, Text, TouchableOpacity} from "react-native";
+import React, {useRef, useState} from "react";
+import {Modal, View, Text, TouchableOpacity, Pressable, StyleSheet, Animated} from "react-native";
+import {BottomTabBarButtonProps} from "expo-router/js-tabs";
+const  AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: BottomTabBarButtonProps) => {
+    const scaleValue = useRef(new Animated.Value(1)).current;
+    const handlePressOut = () => {
+        // 어떤거를 어떤거로 옮기는것임(애니메이션)
+        Animated.sequence([
+            Animated.spring(scaleValue, {
+                toValue: 1.2,
+                useNativeDriver: true,
+                speed: 100,
+            }),
+            Animated.spring(scaleValue, {
+                toValue: 1,
+                useNativeDriver: true,
+                speed: 100,
+            })
+        ])
+        .start();
+    }
+    const handlePressIn = () => {}
+    return (
+        <Pressable
+            {...restProps}
+            onPress={onPress}
+            onPressIn={handlePressIn} // mouse down
+            onPressOut={handlePressOut} // mouse up(뗄때)
+            style={[
+            { flex: 1, justifyContent: "center", alignItems: "center" },
+            style,
+            ]}
+            android_ripple={{borderless: false, radius: 0}}
+        >
+            <Animated.View style={{transform: [{scale: scaleValue}]}}>
+                {children}
+            </Animated.View>
+        </Pressable>
+    );
+}
 
 export default function TabLayout() {
     const router =  useRouter();
@@ -21,6 +59,7 @@ export default function TabLayout() {
                 backBehavior="history"
                 screenOptions={{
                     headerShown: false,
+                    tabBarButton: (props) => <AnimatedTabBarButton {...props}/>
                 }}
             >
                 <Tabs.Screen
@@ -144,3 +183,5 @@ export default function TabLayout() {
         </>
     );
 }
+
+const styles = StyleSheet.create({});
