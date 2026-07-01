@@ -5,7 +5,7 @@ import {Modal, View, Text, TouchableOpacity} from "react-native";
 
 export default function TabLayout() {
     const router =  useRouter();
-    const isLogin = false;
+    const isLoggedIn = true;
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const openLoginModal = () => {
         setIsLoginModalOpen(true);
@@ -51,7 +51,7 @@ export default function TabLayout() {
                     listeners={{
                         tabPress: (e) => {
                             e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
-                            if(!isLogin){
+                            if(!isLoggedIn){
                                 openLoginModal();
                                 return;
                             }
@@ -70,6 +70,15 @@ export default function TabLayout() {
                 />
                 <Tabs.Screen
                     name="activity"
+                    listeners={{
+                        tabPress: (e) => {
+                            if(!isLoggedIn){
+                                e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
+                                openLoginModal();
+                                return;
+                            }
+                        }
+                    }}
                      options={{
                          tabBarLabel: () => null,
                          tabBarIcon: ({focused}) => (
@@ -81,6 +90,15 @@ export default function TabLayout() {
                      }}/>
                 <Tabs.Screen
                     name="[username]"
+                    listeners={{
+                        tabPress: (e) => {
+                            if(!isLoggedIn){
+                                e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
+                                openLoginModal();
+                                return;
+                            }
+                        }
+                    }}
                     options={{
                         tabBarLabel: () => null,
                         tabBarIcon: ({focused}) => (
