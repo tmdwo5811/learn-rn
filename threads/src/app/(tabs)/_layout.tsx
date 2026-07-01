@@ -10,7 +10,7 @@ export default function TabLayout() {
             }}
         >
             <Tabs.Screen
-                name="index"
+                name="(home)"
                 options={{
                     tabBarLabel: () => null,
                     tabBarIcon: ({focused}) => (
@@ -62,7 +62,25 @@ export default function TabLayout() {
                              color={focused ? "black" : "gray"} />
                      )
                  }}/>
-            <Tabs.Screen name="[username]" />
+            <Tabs.Screen
+                name="[username]"
+                options={{
+                    tabBarLabel: () => null,
+                    tabBarIcon: ({focused}) => (
+                        <Ionicons
+                            name="person-outline"
+                            size={24}
+                            color={focused ? "black" : "gray"} />
+                    )
+                }}
+            />
+            <Tabs.Screen
+                name="following"
+                options={{
+                    tabBarLabel: () => null,
+                    href: null
+                }}
+            />
         </Tabs>
     );
 }

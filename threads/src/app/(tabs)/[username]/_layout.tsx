@@ -1,4 +1,3 @@
-// 로그인 후에 처리 하고자하는 로직들
 import {Slot} from "expo-router";
 
 export default Slot;
