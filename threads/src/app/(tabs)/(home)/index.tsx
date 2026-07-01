@@ -7,6 +7,7 @@ export default function Index() {
     const router = useRouter();
     const pathName = usePathname();
     const insets = useSafeAreaInsets();
+    const isLoggedIn = false;
 
     console.log("pathName", pathName);
     console.log("insets", insets);
@@ -21,11 +22,13 @@ export default function Index() {
                     source={require("@/assets/images/react-logo.png")}
                     style={styles.headerLogo}
                 />
-                <TouchableOpacity style={styles.loginButton} onPress={() => router.navigate(`/login`)}>
-                    <Text style={styles.loginButtonText}>로그인</Text>
-                </TouchableOpacity>
+                {!isLoggedIn && (
+                    <TouchableOpacity style={styles.loginButton} onPress={() => router.navigate(`/login`)}>
+                        <Text style={styles.loginButtonText}>로그인</Text>
+                    </TouchableOpacity>
+                )}
             </BlurView>
-            <View style={styles.tabContainer}>
+            {isLoggedIn && (<View style={styles.tabContainer}>
                 <View style={styles.tab}>
                     <TouchableOpacity onPress={() => router.navigate(`/`)}>
                         <Text style={{color: pathName ==="/" ?"red": "black"}}>For you</Text>
@@ -36,7 +39,8 @@ export default function Index() {
                         <Text style={{color: pathName ==="/" ?"black": "red"}}>Following</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View>)}
+
                 <View>
                     <TouchableOpacity onPress={() => router.push(`/@santj5811/post/1`)}>
                         <Text>게시글 1</Text>
