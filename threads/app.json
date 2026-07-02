@@ -37,6 +37,12 @@
           }
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow ${PRODUCT_NAME} to access your location."
+        }
+      ],
       "expo-web-browser"
     ],
     "experiments": {
