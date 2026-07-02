@@ -2,12 +2,15 @@ import {Text, TouchableOpacity, View, StyleSheet, Image, Dimensions} from "react
 import {usePathname, useRouter} from "expo-router";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {BlurView} from "expo-blur";
+import {useContext} from "react";
+import {AuthContext} from "@/app/_layout";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const router = useRouter();
     const pathName = usePathname();
     const insets = useSafeAreaInsets();
-    const isLoggedIn = false;
+    const {user, login, logout} = useContext(AuthContext);
+    const isLoggedIn = !!user;
 
     console.log("pathName", pathName);
     console.log("insets", insets);
@@ -31,58 +34,58 @@ export default function Index() {
             {isLoggedIn && (<View style={styles.tabContainer}>
                 <View style={styles.tab}>
                     <TouchableOpacity onPress={() => router.navigate(`/`)}>
-                        <Text style={{color: pathName ==="/" ?"red": "black"}}>For you</Text>
+                        <Text style={{color: pathName === "/" ? "red" : "black"}}>For you</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.tab}>
                     <TouchableOpacity onPress={() => router.navigate(`/following`)}>
-                        <Text style={{color: pathName ==="/" ?"black": "red"}}>Following</Text>
+                        <Text style={{color: pathName === "/" ? "black" : "red"}}>Following</Text>
                     </TouchableOpacity>
                 </View>
             </View>)}
 
-                <View>
-                    <TouchableOpacity onPress={() => router.push(`/@santj5811/post/1`)}>
-                        <Text>게시글 1</Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => router.push(`/@santj5811/post/2`)}>
-                        <Text>게시글 2</Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity onPress={() => router.push(`/@santj5811/post/3`)}>
-                        <Text>게시글 3</Text>
-                    </TouchableOpacity>
-                </View>
+            <View>
+                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/1`)}>
+                    <Text>게시글 1</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/2`)}>
+                    <Text>게시글 2</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/3`)}>
+                    <Text>게시글 3</Text>
+                </TouchableOpacity>
+            </View>
 
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-      container: {
-          flex: 1,
-      },
+    container: {
+        flex: 1,
+    },
     tabContainer: {
-          flexDirection: "row",
+        flexDirection: "row",
     },
     tab: {
-      flex: 1,
-      alignItems:"center"
+        flex: 1,
+        alignItems: "center"
     },
     header: {
-      alignItems: "center",
+        alignItems: "center",
     },
     headerLogo: {
-      width: 42,
-      height: 42
+        width: 42,
+        height: 42
     },
     loginButton: {
-          position: "absolute",
+        position: "absolute",
         right: 10,
-        top:0,
+        top: 0,
         backgroundColor: "black",
         borderWidth: 1,
         borderColor: "black",
@@ -91,6 +94,6 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     loginButtonText: {
-          color: "white"
+        color: "white"
     }
 })
