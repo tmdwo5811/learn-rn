@@ -16,7 +16,7 @@ import {FontAwesome, Ionicons} from "@expo/vector-icons";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
-import {MediaTypeOptions} from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
 
 interface Thread {
     id: string;
@@ -154,16 +154,22 @@ export default function Modal() {
             return;
         }
 
+
         let result = await ImagePicker.launchCameraAsync({
             mediaTypes: ['images', 'livePhotos', 'videos'],
             allowsEditing: true,
             selectionLimit: 1
         });
 
+        status = (await MediaLibrary.requestPermissionsAsync()).status;
+        if (status === "granted" && result.assets?.[0].uri) {
+            await MediaLibrary.Asset.create(result.assets?.[0].uri);
+        }
+
         if (result.canceled) {
             return;
         }
-        
+
         setThreads(prevThreads => {
             return prevThreads.map(thread => {
                 if (thread.id === id) {
