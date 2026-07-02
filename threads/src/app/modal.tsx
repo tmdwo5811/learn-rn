@@ -106,6 +106,37 @@ export default function Modal() {
     };
 
     const getMyLocation = async (id: string) => {
+        // 권한이 있는지 확인하고
+        let {status} = await Location.requestForegroundPermissionsAsync();
+        console.log("getMyLocation status:", status);
+        if (status !== "granted") {
+            Alert.alert("Location Permission Denied", "Please enable location permissions in your device settings.",
+                [
+                    {
+                        text: "Open Settings", onPress: () => {
+                            Linking.openSettings()
+                        }
+                    },
+                    {
+                        text: "Cancel"
+                    }
+                ]);
+            await Location.getForegroundPermissionsAsync();
+            return;
+        }
+
+        const location = await Location.getCurrentPositionAsync();
+        console.log("Current location:", location.coords.latitude, location.coords.longitude);
+        setThreads((prevThreads) => {
+            return prevThreads.map((thread) => {
+                if (thread.id === id) {
+                    console.log("Adding location to thread:", location.coords.latitude, location.coords.longitude);
+                    return {...thread, location: [location.coords.latitude, location.coords.longitude]};
+                }
+                console.log("Thread not matched for location update:", thread.id, id);
+                return thread;
+            });
+        });
     };
 
     const showHashTagDropDownList = (itemId: string) => {
