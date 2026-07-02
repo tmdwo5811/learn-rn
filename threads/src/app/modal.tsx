@@ -1,22 +1,22 @@
-import React, {useState, useRef, useEffect, useCallback} from "react";
+import React, {useState} from "react";
 import {
-    View,
+    Alert,
+    FlatList,
+    Image,
+    Linking,
+    Pressable,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    FlatList,
-    Image,
-    StyleSheet,
-    Platform,
-    Modal as RNModal,
-    Pressable,
-    Linking,
-    Alert,
+    View,
 } from "react-native";
 import {useRouter} from "expo-router";
-import {Ionicons, FontAwesome} from "@expo/vector-icons";
+import {FontAwesome, Ionicons} from "@expo/vector-icons";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import * as Location from "expo-location";
+import * as ImagePicker from "expo-image-picker";
+import {MediaTypeOptions} from "expo-image-picker";
 
 interface Thread {
     id: string;
@@ -97,9 +97,85 @@ export default function Modal() {
     };
 
     const pickImage = async (id: string) => {
+        let {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            Alert.alert(
+                "Media Library Permission Denied",
+                "Please enable media library permissions in your device settings.",
+                [
+                    {
+                        text: "Open Settings", onPress: () => {
+                            Linking.openSettings()
+                        }
+                    },
+                    {
+                        text: "Cancel"
+                    }
+                ]);
+            return;
+        }
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images', 'livePhotos', 'videos'],
+            allowsMultipleSelection: true,
+            selectionLimit: 5
+        });
+        console.log("ImagePicker result:", result);
+        if (result.canceled) {
+            return;
+        }
+
+        setThreads(prevThreads => {
+            return prevThreads.map(thread => {
+                if (thread.id === id) {
+                    return {
+                        ...thread,
+                        imageUris: thread.imageUris.concat(result.assets?.map((asset) => asset.uri) ?? [])
+                    }
+                }
+                return thread;
+            });
+        });
     };
 
     const takePhoto = async (id: string) => {
+        let {status} = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+            Alert.alert("Camera Permission Denied", "Please enable camera permissions in your device settings.",
+                [
+                    {
+                        text: "Open Settings", onPress: () => {
+                            Linking.openSettings()
+                        }
+                    },
+                    {
+                        text: "Cancel"
+                    }
+                ]);
+            return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ['images', 'livePhotos', 'videos'],
+            allowsEditing: true,
+            selectionLimit: 1
+        });
+
+        if (result.canceled) {
+            return;
+        }
+        
+        setThreads(prevThreads => {
+            return prevThreads.map(thread => {
+                if (thread.id === id) {
+                    return {
+                        ...thread,
+                        imageUris: thread.imageUris.concat(result.assets?.map((asset) => asset.uri) ?? [])
+                    }
+                }
+                return thread;
+            });
+        });
+        console.log("Camera result:", result);
     };
 
     const removeImageFromThread = (id: string, uriToRemove: string) => {
