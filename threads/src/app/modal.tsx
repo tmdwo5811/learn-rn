@@ -127,6 +127,11 @@ export default function Modal() {
 
         const location = await Location.getCurrentPositionAsync();
         console.log("Current location:", location.coords.latitude, location.coords.longitude);
+        const address = await Location.reverseGeocodeAsync({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+        });
+        console.log("address:", address);
         setThreads((prevThreads) => {
             return prevThreads.map((thread) => {
                 if (thread.id === id) {
