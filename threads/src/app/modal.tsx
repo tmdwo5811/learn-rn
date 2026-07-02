@@ -83,8 +83,8 @@ export default function Modal() {
         setActiveHashTagThreadId(null);
     }
 
-    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0;
-    const canPost = threads.every((thread) => thread.text.trim().length > 0);
+    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0 || (threads.at(-1)?.imageUris.length ?? 0) > 0;
+    const canPost = threads.every((thread) => thread.text.trim().length > 0 || thread.imageUris.length > 0);
 
     const addImageToThread = (id: string, uri: string) => {
     };
