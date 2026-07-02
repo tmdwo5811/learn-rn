@@ -43,6 +43,13 @@
           "locationAlwaysAndWhenInUsePermission": "Allow ${PRODUCT_NAME} to access your location."
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow ${PRODUCT_NAME} to access your photos.",
+          "cameraPermission": "Allow ${PRODUCT_NAME} to access your camera."
+        }
+      ],
       "expo-web-browser"
     ],
     "experiments": {
