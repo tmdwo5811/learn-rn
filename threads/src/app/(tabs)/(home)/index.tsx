@@ -1,14 +1,17 @@
-import {Text, TouchableOpacity, View, StyleSheet, Image, Dimensions} from "react-native";
+import {Text, TouchableOpacity, View, StyleSheet, Image, Dimensions, Pressable} from "react-native";
 import {usePathname, useRouter} from "expo-router";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {BlurView} from "expo-blur";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {AuthContext} from "@/app/_layout";
+import {Ionicons} from "@expo/vector-icons";
+import SideMenu from "@/components/SideMenu";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const router = useRouter();
     const pathName = usePathname();
     const insets = useSafeAreaInsets();
+    const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
     const {user, login, logout} = useContext(AuthContext);
     const isLoggedIn = !!user;
 
@@ -21,6 +24,14 @@ export default function Index() {
     return (
         <View style={[styles.container, {paddingTop: insets.top, paddingBottom: insets.bottom}]}>
             <BlurView style={styles.header} intensity={70}>
+                {isLoggedIn && (
+                    <Pressable style={styles.menuButton} onPress={() => {
+                        setIsSideMenuOpen(true)
+                    }}>
+                        <Ionicons name="menu" size={24} color="black"/>
+                    </Pressable>
+                )}
+                <SideMenu isVisible={isSideMenuOpen} onClose={() => setIsSideMenuOpen(false)}/>
                 <Image
                     source={require("@/assets/images/react-logo.png")}
                     style={styles.headerLogo}
@@ -95,5 +106,10 @@ const styles = StyleSheet.create({
     },
     loginButtonText: {
         color: "white"
+    },
+    menuButton: {
+        position: "absolute",
+        left: 20,
+        top: 10
     }
 })
