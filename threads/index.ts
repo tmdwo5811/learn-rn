@@ -19,13 +19,14 @@ if (__DEV__) {
 
     window.server = createServer({
         routes() {
-            this.get("/api/movies", () => {
+            this.get("/login", () => {
                 return {
-                    movies: [
-                        {id: 1, name: "Inception", year: 2020},
-                        {id: 2, name: "Interstellar", year: 2021},
-                        {id: 3, name: "Dunkirk", year: 2022}
-                    ]
+                    isSuccess: true,
+                    accessToken: "access-token",
+                    refreshToken: "refresh-token",
+                    user: {
+                        id: "mock-user-id"
+                    }
                 }
             })
         }
