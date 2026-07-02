@@ -19,7 +19,9 @@ export default function Login() {
                 password: "testpw"
             })
         })
-        console.log("resp", resp.json().then(data => console.log("data", data)))
+        resp.json().then(data => {
+            console.log("data", data)
+        })
     }
 
     return (
