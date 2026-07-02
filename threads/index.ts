@@ -27,7 +27,10 @@ if (__DEV__) {
                         accessToken: "access-token",
                         refreshToken: "refresh-token",
                         user: {
-                            id: "mock-user-id"
+                            id: "mock-user-id",
+                            description: "mock user description",
+                            username: "testusername",
+                            profileImageUrl: "https://phinf.pstatic.net/contact/20251015_27/1760533359414CszI3_JPEG/%C0%AF%C5%E4.jpg?type=f130_130"
                         }
                     };
                 }
