@@ -1,9 +1,10 @@
-import { Tabs, useRouter} from "expo-router";
+import {Tabs, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import React, {useRef, useState} from "react";
 import {Modal, View, Text, TouchableOpacity, Pressable, StyleSheet, Animated} from "react-native";
 import {BottomTabBarButtonProps} from "expo-router/js-tabs";
-const  AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: BottomTabBarButtonProps) => {
+
+const AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: BottomTabBarButtonProps) => {
     const scaleValue = useRef(new Animated.Value(1)).current;
     const handlePressOut = () => {
         // 어떤거를 어떤거로 옮기는것임(애니메이션)
@@ -19,9 +20,10 @@ const  AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: Bo
                 speed: 100,
             })
         ])
-        .start();
+            .start();
     }
-    const handlePressIn = () => {}
+    const handlePressIn = () => {
+    }
     return (
         <Pressable
             {...restProps}
@@ -29,8 +31,8 @@ const  AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: Bo
             onPressIn={handlePressIn} // mouse down
             onPressOut={handlePressOut} // mouse up(뗄때)
             style={[
-            { flex: 1, justifyContent: "center", alignItems: "center" },
-            style,
+                {flex: 1, justifyContent: "center", alignItems: "center"},
+                style,
             ]}
             android_ripple={{borderless: false, radius: 0}}
         >
@@ -42,8 +44,8 @@ const  AnimatedTabBarButton = ({children, onPress, style, ref, ...restProps}: Bo
 }
 
 export default function TabLayout() {
-    const router =  useRouter();
-    const isLoggedIn = true;
+    const router = useRouter();
+    const isLoggedIn = false;
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const openLoginModal = () => {
         setIsLoginModalOpen(true);
@@ -51,6 +53,11 @@ export default function TabLayout() {
 
     const closeLoginModal = () => {
         setIsLoginModalOpen(false);
+    }
+
+    const toLoginPage = () => {
+        setIsLoginModalOpen(false);
+        router.push("/login");
     }
 
     return (
@@ -70,7 +77,7 @@ export default function TabLayout() {
                             <Ionicons
                                 name="home"
                                 size={24}
-                                color={focused ? "black" : "gray"} />
+                                color={focused ? "black" : "gray"}/>
                         )
                     }}
                 />
@@ -82,7 +89,7 @@ export default function TabLayout() {
                             <Ionicons
                                 name="search"
                                 size={24}
-                                color={focused ? "black" : "gray"} />
+                                color={focused ? "black" : "gray"}/>
                         )
                     }}
                 />
@@ -91,7 +98,7 @@ export default function TabLayout() {
                     listeners={{
                         tabPress: (e) => {
                             e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
-                            if(!isLoggedIn){
+                            if (!isLoggedIn) {
                                 openLoginModal();
                                 return;
                             }
@@ -104,7 +111,7 @@ export default function TabLayout() {
                             <Ionicons
                                 name="add"
                                 size={24}
-                                color={focused ? "black" : "gray"} />
+                                color={focused ? "black" : "gray"}/>
                         )
                     }}
                 />
@@ -112,27 +119,27 @@ export default function TabLayout() {
                     name="activity"
                     listeners={{
                         tabPress: (e) => {
-                            if(!isLoggedIn){
+                            if (!isLoggedIn) {
                                 e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
                                 openLoginModal();
                                 return;
                             }
                         }
                     }}
-                     options={{
-                         tabBarLabel: () => null,
-                         tabBarIcon: ({focused}) => (
-                             <Ionicons
-                                 name="heart-outline"
-                                 size={24}
-                                 color={focused ? "black" : "gray"} />
-                         )
-                     }}/>
+                    options={{
+                        tabBarLabel: () => null,
+                        tabBarIcon: ({focused}) => (
+                            <Ionicons
+                                name="heart-outline"
+                                size={24}
+                                color={focused ? "black" : "gray"}/>
+                        )
+                    }}/>
                 <Tabs.Screen
                     name="[username]"
                     listeners={{
                         tabPress: (e) => {
-                            if(!isLoggedIn){
+                            if (!isLoggedIn) {
                                 e.preventDefault() // 페이지 이동하지 않게 아무일도 일어나지 않음
                                 openLoginModal();
                                 return;
@@ -172,10 +179,14 @@ export default function TabLayout() {
                 }}>
                     <View style={{
                         backgroundColor: "white",
-                        padding: 20}}>
-                        <Text>로그인 모달</Text>
+                        padding: 20
+                    }}>
+                        <Pressable onPress={toLoginPage}>
+                            <Text>로그인 모달</Text>
+                        </Pressable>
+
                         <TouchableOpacity onPress={closeLoginModal}>
-                            <Ionicons name={"close"} size={24} color="#555" />
+                            <Ionicons name={"close"} size={24} color="#555"/>
                         </TouchableOpacity>
                     </View>
                 </View>
