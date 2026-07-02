@@ -185,6 +185,17 @@ export default function Modal() {
     };
 
     const removeImageFromThread = (id: string, uriToRemove: string) => {
+        setThreads((prevThreads) => {
+            return prevThreads.map((thread) => {
+                if (thread.id === id) {
+                    return {
+                        ...thread,
+                        imageUris: thread.imageUris.filter((uri) => uri !== uriToRemove),
+                    };
+                }
+                return thread;
+            });
+        });
     };
 
     const getMyLocation = async (id: string) => {
