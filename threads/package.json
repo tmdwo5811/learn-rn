@@ -1,6 +1,6 @@
 {
   "name": "threads",
-  "main": "expo-router/entry",
+  "main": "index.ts",
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~56.0.18",
