@@ -1,18 +1,24 @@
 // 앱 열자마자 처리하고자 하는 로직 구성 가능
 import {Stack, useRouter} from "expo-router";
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext<{
-    user?: object | null;
+    user?: User | null;
     login?: () => Promise<void>;
     logout?: () => Promise<void>;
 }>({});
 
+interface User {
+    id: string;
+    description: string;
+    username: string;
+    profileImageUrl: string;
+}
 
 export default function RootLayout() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
     const login = async () => {
         console.log("login called")
@@ -45,6 +51,14 @@ export default function RootLayout() {
         ]);
 
     }
+    useEffect(() => {
+        AsyncStorage.getItem("user").then((user) => {
+            setUser(user ? JSON.parse(user) : null);
+        })
+        // TODO: access/login token 이 유효한지 확인
+
+
+    }, [])
 
     return (
         <AuthContext value={{user, login, logout}}>
