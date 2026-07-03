@@ -2,12 +2,12 @@ import {
     createMaterialTopTabNavigator,
     type MaterialTopTabNavigationOptions,
     type MaterialTopTabNavigationEventMap,
-} from "@react-navigation/material-top-tabs";
-import {useLocalSearchParams, useRouter, withLayoutContext} from "expo-router";
-import {Image, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+} from "expo-router/js-top-tabs";
+import {useLocalSearchParams, withLayoutContext} from "expo-router";
+import {Image, Pressable, StyleSheet, Text, View} from "react-native";
 import React, {useContext, useState} from "react";
 import {AuthContext} from "@/app/_layout";
-import {ParamListBase, TabNavigationState} from "@react-navigation/native";
+import {ParamListBase, TabNavigationState} from "expo-router/react-navigation";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {Ionicons} from "@expo/vector-icons";
 import SideMenu from "@/components/SideMenu";
