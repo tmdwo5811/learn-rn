@@ -53,12 +53,15 @@ if (__DEV__) {
         factories: {
             user: Factory.extend({
                 id: () => faker.person.firstName(),
+                username: () => faker.internet.username(),
                 name: () => faker.person.fullName(),
                 description: () => faker.lorem.sentence(),
                 profileImageUrl: () =>
                     `https://avatars.githubusercontent.com/u/${Math.floor(
                         Math.random() * 100_000
                     )}?v=4`,
+                isFollow: () => Math.random() > 0.5,
+                followerCount: () => Math.floor(Math.random() * 10_000),
                 isVerified: () => Math.random() > 0.5,
             }),
             post: Factory.extend({

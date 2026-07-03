@@ -17,9 +17,19 @@ import SideMenu from "@/components/SideMenu";
 import {BlurView} from "expo-blur";
 import {useRouter} from "expo-router";
 import hairlineWidth = StyleSheet.hairlineWidth;
+import {Button} from "@expo/ui";
 
 function FollowSuggestionList() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<{
+        id: string;
+        username: string;
+        name: string;
+        description: string;
+        profileImageUrl: string;
+        isFollow: boolean;
+        followerCount: number;
+        isVerified: boolean;
+    }[]>([]);
     useEffect(() => {
         fetch("/follow-suggestions", {
             method: "GET"
@@ -33,10 +43,25 @@ function FollowSuggestionList() {
     }, []);
     return (
         <FlatList
-            data={users} keyExtractor={(user) => user.username} renderItem={({item}) =>
-            <View>
-                <Image source={{uri: item.profileImageUrl}} style={{width: 30}}></Image>
+            data={users} keyExtractor={(user) => user.id} renderItem={({item}) =>
+            <View style={{padding: 15}}>
+                <Image source={{uri: item.profileImageUrl}} style={{borderRadius: 100, width: 50, height: 50}}></Image>
+                <TouchableOpacity style={styles.followButton} onPress={() => {
+                    setUsers(prevUsers => prevUsers.map(user => {
+                        if (user.id === item.id) {
+                            return {...user, isFollow: !user.isFollow};
+                        }
+                        return user;
+                    }));
+                }}>
+                    <Text style={{fontWeight: "bold"}}>{item.isFollow ? "Follow Back" : "Follow"}</Text>
+                </TouchableOpacity>
                 <Text>{item.name}</Text>
+                <Text>{item.username}</Text>
+                <Text>{item.description}</Text>
+                <Text>{item.followerCount} followers</Text>
+                <Text>{item.isVerified ? "Verified" : "Not Verified"}</Text>
+
             </View>
         }>
         </FlatList>
@@ -152,4 +177,16 @@ const styles = StyleSheet.create({
     loginButtonText: {
         color: "white"
     },
+    followButton: {
+        position: "absolute",
+        right: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 35,
+        backgroundColor: "#fff",
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginTop: 15,
+    }
 })
