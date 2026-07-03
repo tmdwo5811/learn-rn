@@ -114,6 +114,11 @@ if (__DEV__) {
                 return new Response(200, {}, {post, comments});
             });
 
+            this.get("/follow-suggestions", (schema, request) => {
+                const users = schema.all("user").models.slice(0, 5);
+                return new Response(200, {}, {users});
+            });
+
             this.post("/login", (schema, request) => {
                 const {username, password} = JSON.parse(request.requestBody);
 

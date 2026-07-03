@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "threadc",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "auto",
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.santj5811.threads"
