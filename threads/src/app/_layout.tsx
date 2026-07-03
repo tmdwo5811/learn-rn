@@ -12,7 +12,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {
 
 })
 
-interface User {
+export interface User {
     id: string;
     description: string;
     username: string;
