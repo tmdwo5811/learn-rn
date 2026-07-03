@@ -1,17 +1,31 @@
 import {
-    createMaterialTopTabNavigator,
-    type MaterialTopTabNavigationOptions,
     type MaterialTopTabNavigationEventMap,
-} from "expo-router/js-top-tabs";
-import {Slot, useLocalSearchParams, usePathname, useRouter, withLayoutContext} from "expo-router";
-import {Image, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import React, {useContext, useState} from "react";
+    type MaterialTopTabNavigationOptions,
+    createMaterialTopTabNavigator,
+} from "@react-navigation/material-top-tabs";
+import {Slot, withLayoutContext} from "expo-router";
+import type {
+    ParamListBase,
+    TabNavigationState,
+} from "@react-navigation/native";
+import {
+    Pressable,
+    View,
+    Image,
+    Text,
+    useColorScheme,
+    Appearance,
+} from "react-native";
+import {useState} from "react";
 import {AuthContext} from "@/app/_layout";
-import {ParamListBase, TabNavigationState} from "expo-router/react-navigation";
+import {useContext} from "react";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {StyleSheet} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import SideMenu from "@/components/SideMenu";
 import {BlurView} from "expo-blur";
+import {TouchableOpacity} from "react-native";
+import {router} from "expo-router";
 
 const {Navigator} = createMaterialTopTabNavigator();
 
@@ -23,33 +37,71 @@ export const MaterialTopTabs = withLayoutContext<
 >(Navigator);
 
 export default function TabLayout() {
-    const router = useRouter();
+    const colorScheme = useColorScheme();
     const insets = useSafeAreaInsets();
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
-    const {username} = useLocalSearchParams();
-    const {user, login, logout} = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     const isLoggedIn = !!user;
+
     return (
-        <View style={[
-            styles.container,
-            {paddingTop: insets.top, paddingBottom: insets.bottom}
-        ]}>
-            <BlurView style={styles.header} intensity={70}>
+        <View
+            style={[
+                styles.container,
+                {paddingTop: insets.top, paddingBottom: insets.bottom},
+                colorScheme === "dark" ? styles.containerDark : styles.containerLight,
+            ]}
+        >
+            <BlurView
+                style={[
+                    styles.header,
+                    colorScheme === "dark" ? styles.headerDark : styles.headerLight,
+                ]}
+                intensity={colorScheme === "dark" ? 5 : 70}
+            >
                 {isLoggedIn && (
-                    <Pressable style={styles.menuButton} onPress={() => {
-                        setIsSideMenuOpen(true)
-                    }}>
-                        <Ionicons name="menu" size={24} color="black"/>
+                    <Pressable
+                        style={styles.menuButton}
+                        onPress={() => {
+                            setIsSideMenuOpen(true);
+                        }}
+                    >
+                        <Ionicons
+                            name="menu"
+                            size={24}
+                            color={colorScheme === "dark" ? "gray" : "black"}
+                        />
                     </Pressable>
                 )}
-                <SideMenu isVisible={isSideMenuOpen} onClose={() => setIsSideMenuOpen(false)}/>
+                <SideMenu
+                    isVisible={isSideMenuOpen}
+                    onClose={() => setIsSideMenuOpen(false)}
+                />
                 <Image
-                    source={require("@/assets/images/react-logo.png")}
+                    source={require("../../../assets/images/react-logo.png")}
                     style={styles.headerLogo}
                 />
                 {!isLoggedIn && (
-                    <TouchableOpacity style={styles.loginButton} onPress={() => router.navigate(`/login`)}>
-                        <Text style={styles.loginButtonText}>로그인</Text>
+                    <TouchableOpacity
+                        style={[
+                            styles.loginButton,
+                            colorScheme === "dark"
+                                ? styles.loginButtonDark
+                                : styles.loginButtonLight,
+                        ]}
+                        onPress={() => {
+                            console.log("loginButton onPress");
+                            router.navigate(`/login`);
+                        }}
+                    >
+                        <Text
+                            style={
+                                colorScheme === "dark"
+                                    ? styles.loginButtonTextDark
+                                    : styles.loginButtonTextLight
+                            }
+                        >
+                            로그인
+                        </Text>
                     </TouchableOpacity>
                 )}
             </BlurView>
@@ -58,25 +110,29 @@ export default function TabLayout() {
                     screenOptions={{
                         lazy: true,
                         tabBarStyle: {
-                            backgroundColor: "white",
+                            backgroundColor: colorScheme === "dark" ? "#101010" : "white",
                             shadowColor: "transparent",
-                            position: "relative"
+                            position: "relative",
+                        },
+                        tabBarLabelStyle: {
+                            fontSize: 16,
+                            fontWeight: "bold",
                         },
                         tabBarPressColor: "transparent",
-                        tabBarActiveTintColor: "#555",
+                        tabBarActiveTintColor: colorScheme === "dark" ? "white" : "#555",
                         tabBarIndicatorStyle: {
-                            backgroundColor: "black",
+                            backgroundColor: colorScheme === "dark" ? "white" : "black",
                             height: 1,
                         },
                         tabBarIndicatorContainerStyle: {
-                            backgroundColor: "#aaa",
+                            backgroundColor: colorScheme === "dark" ? "#aaa" : "#555",
                             position: "absolute",
-                            top: 48,
-                            height: 1
-                        }
+                            top: 49,
+                            height: 1,
+                        },
                     }}
                 >
-                    <MaterialTopTabs.Screen name="index" options={{title: "For you"}}/>
+                    <MaterialTopTabs.Screen name="index" options={{title: "For You"}}/>
                     <MaterialTopTabs.Screen
                         name="following"
                         options={{title: "Following"}}
@@ -86,44 +142,56 @@ export default function TabLayout() {
                 <Slot/>
             )}
         </View>
-    )
-};
-
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    header: {
-        alignItems: "center",
+    containerLight: {
+        backgroundColor: "white",
     },
-    headerLogo: {
-        width: 42,
-        height: 42
+    containerDark: {
+        backgroundColor: "#101010",
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 16,
+        height: 50,
+    },
+    headerLight: {
+        backgroundColor: "white",
+    },
+    headerDark: {
+        backgroundColor: "#101010",
     },
     menuButton: {
         position: "absolute",
-        left: 20,
-        top: 10
+        left: 16,
     },
-    tab: {
-        flex: 1,
-        alignItems: "center"
+    headerLogo: {
+        width: 32,
+        height: 32,
     },
     loginButton: {
+        padding: 8,
+        borderRadius: 4,
         position: "absolute",
         right: 16,
+    },
+    loginButtonLight: {
         backgroundColor: "black",
-        borderWidth: 1,
-        borderColor: "black",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 10
     },
-    loginButtonText: {
-        color: "white"
+    loginButtonDark: {
+        backgroundColor: "white",
     },
-    tabContainer: {
-        flexDirection: "row",
+    loginButtonTextLight: {
+        color: "white",
     },
-})
+    loginButtonTextDark: {
+        color: "black",
+    },
+});
