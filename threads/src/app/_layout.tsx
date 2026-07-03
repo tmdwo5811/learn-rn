@@ -112,13 +112,18 @@ function AnimatedSplashScreen({children, image}: { children: React.ReactNode, im
         if (isAppReady) {
             Animated.timing(animation, {
                 toValue: 0,
-                duration: 1000,
+                duration: 2000,
                 useNativeDriver: true
             }).start(() => {
                 setIsSplashAnimationComplete(true);
             });
         }
     }, [isAppReady]);
+
+    const rotateValue = animation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ["360deg", "0deg"]
+    })
     return (
         <View style={{flex: 1}}>
             {isAppReady && children}
@@ -136,7 +141,9 @@ function AnimatedSplashScreen({children, image}: { children: React.ReactNode, im
                         source={image}
                         resizeMode={Constants.expoConfig?.splash?.resizeMode || "contain"}
                         style={{
-                            width: Constants.expoConfig?.splash?.imageScale || 100
+                            width: Constants.expoConfig?.splash?.imageScale || 100,
+                            resizeMode: Constants.expoConfig?.splash?.resizeMode || "contain",
+                            transform: [{scale: animation}, {rotate: rotateValue}]
                         }}
                         onLoadEnd={onImageLoaded}
                         fadeDuration={0}
