@@ -165,13 +165,6 @@ export default function TabLayout() {
                         href: null
                     }}
                 />
-                <Tabs.Screen
-                    name="following"
-                    options={{
-                        tabBarLabel: () => null,
-                        href: null
-                    }}
-                />
             </Tabs>
             <Modal visible={isLoginModalOpen} transparent={true} animationType="slide">
                 <View style={{

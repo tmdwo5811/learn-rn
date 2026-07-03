@@ -4,12 +4,12 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    SafeAreaView,
     Modal,
     useColorScheme,
     Pressable,
     Appearance,
 } from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
 import {Ionicons} from "@expo/vector-icons";
 import {BlurView} from "expo-blur"; // For background blur effect
 import {AuthContext} from "../app/_layout";
