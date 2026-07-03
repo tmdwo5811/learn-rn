@@ -25,7 +25,6 @@ export const MaterialTopTabs = withLayoutContext<
 export default function TabLayout() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
-    const pathName = usePathname();
     const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
     const {username} = useLocalSearchParams();
     const {user, login, logout} = useContext(AuthContext);
@@ -55,7 +54,28 @@ export default function TabLayout() {
                 )}
             </BlurView>
             {isLoggedIn ? (
-                <MaterialTopTabs>
+                <MaterialTopTabs
+                    screenOptions={{
+                        lazy: true,
+                        tabBarStyle: {
+                            backgroundColor: "white",
+                            shadowColor: "transparent",
+                            position: "relative"
+                        },
+                        tabBarPressColor: "transparent",
+                        tabBarActiveTintColor: "#555",
+                        tabBarIndicatorStyle: {
+                            backgroundColor: "black",
+                            height: 1,
+                        },
+                        tabBarIndicatorContainerStyle: {
+                            backgroundColor: "#aaa",
+                            position: "absolute",
+                            top: 48,
+                            height: 1
+                        }
+                    }}
+                >
                     <MaterialTopTabs.Screen name="index" options={{title: "For you"}}/>
                     <MaterialTopTabs.Screen
                         name="following"
