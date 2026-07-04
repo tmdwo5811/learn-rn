@@ -121,7 +121,7 @@ export default function Index() {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={styles.tabBarScroll}
-                contentContainerStyle={styles.tabBarContent}
+                contentContainerStyle={styles.tabBarContainer}
             >
                 <View>
                     <TouchableOpacity
@@ -385,16 +385,17 @@ const styles = StyleSheet.create({
         color: "white",
     },
     tabBarScroll: {
-        height: 60,
+        height: 50,
         position: "relative",
         top: 0,
         left: 0,
         right: 0,
+        flexGrow: 0
     },
-    tabBarContent: {
+    tabBarContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 10,
+        paddingHorizontal: 10
     },
     logo: {
         width: 32,
