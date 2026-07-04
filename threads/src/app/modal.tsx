@@ -18,6 +18,7 @@ import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import {AuthContext} from "@/app/_layout";
+import Toast from "react-native-toast-message";
 
 interface Thread {
     id: string;
@@ -66,6 +67,11 @@ export default function Modal() {
     };
 
     const handlePost = () => {
+        Toast.show({
+            text1: "Posting...",
+            type: "info",
+            visibilityTime: 5000,
+        })
         fetch("http://localhost:3000/posts", {
             method: "POST",
             headers: {
@@ -78,7 +84,21 @@ export default function Modal() {
             .then((data) => {
                 const post = data.posts[0];
                 router.replace(`/@${user?.id}/post/${post.id}`);
+                Toast.hide();
+                Toast.show({
+                    text1: "Posted successfully!",
+                    type: "success",
+                    visibilityTime: 5000,
+                })
+            }).catch((err) => {
+            console.log("post error", err);
+            Toast.hide();
+            Toast.show({
+                text1: "Failed to post.",
+                type: "error",
+                visibilityTime: 5000,
             })
+        })
     };
 
     const updateThreadText = (id: string, text: string) => {

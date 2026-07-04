@@ -7,6 +7,7 @@ import {Asset} from "expo-asset";
 import {Animated, StyleSheet, View} from "react-native";
 import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync().catch(() => {
 
@@ -164,6 +165,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)"/>
                 <Stack.Screen name="modal" options={{presentation: "modal"}}/>
             </Stack>
+            <Toast/>
         </AnimatedAppLoader>
     )
 }

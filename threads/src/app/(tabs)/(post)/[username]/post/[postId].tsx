@@ -27,8 +27,7 @@ export default function PostScreen() {
         fetch(`http://localhost:3000/posts/${postId}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data)
-                setPost(data.posts);
+                setPost(data.post);
             });
         fetch(`http://localhost:3000/posts/${postId}/comments`)
             .then((res) => res.json())
