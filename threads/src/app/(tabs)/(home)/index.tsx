@@ -7,6 +7,7 @@ import Post, {Post as PostType} from "@/components/Post";
 export default function Index() {
     const colorScheme = useColorScheme();
     const [posts, setPosts] = useState<PostType[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
     const path = usePathname();
     useEffect(() => {
         fetch(`http://localhost:3000/posts`, {})
@@ -30,10 +31,21 @@ export default function Index() {
             });
     }, [posts, path])
 
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetch(`http://localhost:3000/posts`, {})
+            .then((res) => res.json())
+            .then((data) => {
+                setPosts(data.posts);
+            })
+            .finally(() => setRefreshing(false));
+    }
 
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
-            <FlashList data={posts} renderItem={({item}) => <Post item={item}/>} onEndReached={onEndReached}/>
+            <FlashList data={posts} refreshing={refreshing} onRefresh={onRefresh}
+                       renderItem={({item}) => <Post item={item}/>}
+                       onEndReached={onEndReached}/>
         </View>
     );
 }
