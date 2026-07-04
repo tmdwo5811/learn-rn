@@ -4,6 +4,10 @@ import {FlashList} from "@shopify/flash-list";
 import {useCallback, useEffect, useState} from "react";
 import Post, {Post as PostType} from "@/components/Post";
 import * as Haptics from "expo-haptics";
+import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
+import {onScrollPhaseChange} from "@expo/ui/swift-ui/modifiers";
+
+const AnimatedFlashList = Animated.createAnimatedComponent(FlashList<PostType>);
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const colorScheme = useColorScheme();
@@ -43,11 +47,22 @@ export default function Index() {
             .finally(() => setRefreshing(false));
     }
 
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+            console.log("onScroll", event.contentOffset.y);
+        }
+    });
+
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
-            <FlashList data={posts} refreshing={refreshing} onRefresh={onRefresh}
-                       renderItem={({item}) => <Post item={item}/>}
-                       onEndReached={onEndReached}/>
+            <AnimatedFlashList
+                data={posts}
+                refreshing={refreshing}
+                refreshControl={<View/>}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
+                renderItem={({item}) => <Post item={item}/>}
+                onEndReached={onEndReached}/>
         </View>
     );
 }
