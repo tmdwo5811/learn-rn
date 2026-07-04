@@ -11,7 +11,7 @@ import {
     Factory,
 } from "miragejs";
 import {faker} from "@faker-js/faker";
-import {type User} from "@/app/_layout";
+import {User} from "@/app/_layout";
 
 declare global {
     interface Window {
@@ -121,6 +121,9 @@ if (__DEV__) {
                 description: "🐢 lover, programmer, youtuber",
                 profileImageUrl: "https://avatars.githubusercontent.com/u/885857?v=4",
             });
+            server.createList("post", 5, {
+                user: zerocho,
+            });
             const users = server.createList("user", 10);
             users.forEach((user) => {
                 server.createList("post", 5, {
@@ -168,14 +171,19 @@ if (__DEV__) {
             });
 
             this.get("/posts", (schema, request) => {
-                const posts = schema.all("post");
+                let posts = schema.all("post");
+                if (request.queryParams.type === "following") {
+                    posts = posts.filter((post) => {
+                        return post.user?.id === "zerohch0";
+                    });
+                }
                 let targetIndex = -1;
                 if (request.queryParams.cursor) {
                     targetIndex = posts.models.findIndex((v) => {
                         return v.id === request.queryParams.cursor;
                     });
                 }
-                return schema.all("post").slice(targetIndex + 1, targetIndex + 11);
+                return posts.slice(targetIndex + 1, targetIndex + 11);
             });
 
             this.get("/posts/:id", (schema, request) => {

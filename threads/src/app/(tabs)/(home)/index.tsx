@@ -38,7 +38,6 @@ export default function Index() {
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
             <FlashList data={posts} renderItem={({item}) => <Post item={item}/>} onEndReached={onEndReached}/>
-
         </View>
     );
 }
