@@ -21,12 +21,13 @@ export default function Index() {
     const [threads, setThreads] = useState<any[]>([]);
 
     useEffect(() => {
+        setThreads([]);
         fetch(`http://localhost:3000/users/${username?.slice(1)}/threads`)
             .then((res) => res.json())
             .then((data) => {
                 setThreads(data.posts);
             });
-    }, []);
+    }, [username]);
 
     const onEndReached = () => {
         fetch(`http://localhost:3000/users/${username?.slice(1)}/threads?cursor=${threads.at(-1)?.id}`)
