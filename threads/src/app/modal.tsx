@@ -23,7 +23,7 @@ interface Thread {
     text: string;
     hashtag?: string;
     location?: [number, number];
-    imageUris: string[]; // 경로만 입력하면 됨, blob, file 불필요
+    imageUrls: string[]; // 경로만 입력하면 됨, blob, file 불필요
 }
 
 export function ListFooter({canAddThread, addThread}: { canAddThread: boolean; addThread: () => void }) {
@@ -49,7 +49,7 @@ export function ListFooter({canAddThread, addThread}: { canAddThread: boolean; a
 export default function Modal() {
     const router = useRouter();
     const [threads, setThreads] = useState<Thread[]>([
-        {id: Date.now().toString(), text: "", imageUris: []},
+        {id: Date.now().toString(), text: "", imageUrls: []},
     ]);
     const insets = useSafeAreaInsets();
     const [replyOption, setReplyOption] = useState("Anyone");
@@ -64,6 +64,19 @@ export default function Modal() {
     };
 
     const handlePost = () => {
+        fetch("http://localhost:3000/posts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                posts: threads
+            })
+        }).then(res => res.json())
+            .then((data) => {
+                console.log("Post created:", data);
+                console.log("imageUrls:", data.posts.map((post: any) => post.imageUrls));
+            })
     };
 
     const updateThreadText = (id: string, text: string) => {
@@ -83,8 +96,8 @@ export default function Modal() {
         setActiveHashTagThreadId(null);
     }
 
-    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0 || (threads.at(-1)?.imageUris.length ?? 0) > 0;
-    const canPost = threads.every((thread) => thread.text.trim().length > 0 || thread.imageUris.length > 0);
+    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0 || (threads.at(-1)?.imageUrls.length ?? 0) > 0;
+    const canPost = threads.every((thread) => thread.text.trim().length > 0 || thread.imageUrls.length > 0);
 
     const addImageToThread = (id: string, uri: string) => {
     };
@@ -129,7 +142,7 @@ export default function Modal() {
                 if (thread.id === id) {
                     return {
                         ...thread,
-                        imageUris: thread.imageUris.concat(result.assets?.map((asset) => asset.uri) ?? [])
+                        imageUrls: thread?.imageUrls.concat(result.assets?.map((asset) => asset.uri) ?? [])
                     }
                 }
                 return thread;
@@ -175,7 +188,7 @@ export default function Modal() {
                 if (thread.id === id) {
                     return {
                         ...thread,
-                        imageUris: thread.imageUris.concat(result.assets?.map((asset) => asset.uri) ?? [])
+                        imageUrls: thread.imageUrls.concat(result.assets?.map((asset) => asset.uri) ?? [])
                     }
                 }
                 return thread;
@@ -190,7 +203,7 @@ export default function Modal() {
                 if (thread.id === id) {
                     return {
                         ...thread,
-                        imageUris: thread.imageUris.filter((uri) => uri !== uriToRemove),
+                        imageUrls: thread.imageUrls.filter((uri) => uri !== uriToRemove),
                     };
                 }
                 return thread;
@@ -306,9 +319,9 @@ export default function Modal() {
                     onChangeText={(text) => updateThreadText(item.id, text)}
                     multiline
                 />
-                {item.imageUris && item.imageUris.length > 0 && (
+                {item.imageUrls && item.imageUrls.length > 0 && (
                     <FlatList
-                        data={item.imageUris}
+                        data={item.imageUrls}
                         renderItem={({item: uri, index: imgIndex}) => (
                             <View style={styles.imagePreviewContainer}>
                                 <Image source={{uri}} style={styles.imagePreview}/>
@@ -387,7 +400,7 @@ export default function Modal() {
                         if (canAddThread) {
                             setThreads((prevThreads) => [
                                 ...prevThreads,
-                                {id: Date.now().toString(), text: "", imageUris: []},
+                                {id: Date.now().toString(), text: "", imageUrls: []},
                             ])
                         }
                     }}/>
