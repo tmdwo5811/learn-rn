@@ -23,11 +23,13 @@ export default function Index() {
         if (posts.length <= 0) {
             return;
         }
-        
+
         fetch(`http://localhost:3000/posts?type=${path.split("/").pop()}&cursor=${posts.at(-1)?.id}`, {})
             .then((res) => res.json())
             .then((data) => {
-                setPosts([...posts, ...data.posts]);
+                if (data.posts.length > 0) {
+                    setPosts([...posts, ...data.posts]);
+                }
             });
     }
 
