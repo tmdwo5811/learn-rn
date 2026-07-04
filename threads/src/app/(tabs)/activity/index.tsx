@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
     },
     tabBarContent: {
         flexDirection: "row",
-        alignItems: "center",
+        justifyContent: "space-between",
         paddingHorizontal: 10,
     },
     logo: {
