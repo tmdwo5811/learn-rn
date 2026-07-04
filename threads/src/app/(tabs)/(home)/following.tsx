@@ -1,39 +1,30 @@
 import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
 import {useRouter, usePathname} from "expo-router";
 import {FlashList} from "@shopify/flash-list";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import Post, {Post as PostType} from "@/components/Post";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
-export default function Index() {
+export default function Following() {
     const colorScheme = useColorScheme();
-    const router = useRouter();
+    const [posts, setPosts] = useState<PostType[]>([]);
     const path = usePathname();
-
     useEffect(() => {
-        console.log("path", path);
-        setPosts([]);
-        fetch(`http://localhost:3000/posts?type=${path.split("/").pop()}`, {})
+        fetch(`http://localhost:3000/posts`, {})
             .then((res) => res.json())
             .then((data) => {
                 setPosts(data.posts);
-            })
+            });
     }, [path]);
 
-    const onEndReached = () => {
-        if (posts.length <= 0) {
-            return;
-        }
-
-        fetch(`http://localhost:3000/posts?type=${path.split("/").pop()}&cursor=${posts.at(-1)?.id}`, {})
+    const onEndReached = useCallback(() => {
+        fetch(`http://localhost:3000/posts?type=following&cursor=${posts.at(-1)?.id}`, {})
             .then((res) => res.json())
             .then((data) => {
                 if (data.posts.length > 0) {
-                    setPosts([...posts, ...data.posts]);
+                    setPosts((prev) => [...prev, ...data.posts]);
                 }
             });
-    }
-
-    const [posts, setPosts] = useState<PostType[]>([]);
+    }, [posts, path]);
 
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
