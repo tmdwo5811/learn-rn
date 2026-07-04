@@ -11,7 +11,7 @@ import {
     Factory,
 } from "miragejs";
 import {faker} from "@faker-js/faker";
-import {type User} from "./app/_layout";
+import {type User} from "@/app/_layout";
 
 declare global {
     interface Window {
@@ -117,7 +117,7 @@ if (__DEV__) {
         seeds(server) {
             zerocho = server.create("user", {
                 id: "zerohch0",
-                name: "ZeroCho",
+                username: "ZeroCho",
                 description: "🐢 lover, programmer, youtuber",
                 profileImageUrl: "https://avatars.githubusercontent.com/u/885857?v=4",
             });
@@ -170,14 +170,19 @@ if (__DEV__) {
             this.get("/posts", (schema, request) => {
                 console.log("user.all", schema.all("user").models);
                 const cursor = parseInt((request.queryParams.cursor as string) || "0");
-                const posts = schema.all("post").models.slice(cursor, cursor + 10);
-                return new Response(200, {}, {posts});
+                return schema.all("post").slice(cursor, cursor + 10);
             });
 
             this.get("/posts/:id", (schema, request) => {
                 const post = schema.find("post", request.params.id);
                 const comments = schema.all("post").models.slice(0, 10);
-                return new Response(200, {}, {post, comments});
+                return {
+                    post: post ? {...post.attrs, user: (post as any).user?.attrs} : null,
+                    comments: comments.map((comment: any) => ({
+                        ...comment.attrs,
+                        user: comment.user?.attrs,
+                    })),
+                };
             });
 
             this.get("/activity", (schema: any, request) => {

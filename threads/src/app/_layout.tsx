@@ -15,7 +15,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {
 export interface User {
     id: string;
     description: string;
-    username: string;
+    name: string;
     profileImageUrl: string;
 }
 

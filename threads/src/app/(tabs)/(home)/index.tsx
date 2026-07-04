@@ -1,27 +1,30 @@
 import {StyleSheet, Text, TouchableOpacity, useColorScheme, View} from "react-native";
-import {useRouter} from "expo-router";
+import {useRouter, usePathname} from "expo-router";
+import {FlashList} from "@shopify/flash-list";
+import {useEffect, useState} from "react";
+import Post, {Post as PostType} from "@/components/Post";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const colorScheme = useColorScheme();
     const router = useRouter();
+    const path = usePathname();
+
+    useEffect(() => {
+        console.log("path", path);
+        setPosts([]);
+        fetch(`/posts?type=${path.split("/").pop()}`, {})
+            .then((res) => res.json())
+            .then((data) => {
+                setPosts(data);
+            })
+    }, [path]);
+
+    const [posts, setPosts] = useState<PostType[]>([]);
 
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
-            <View>
-                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/1`)}>
-                    <Text style={colorScheme === "dark" ? styles.textLight : styles.textDark}>게시글 1</Text>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/2`)}>
-                    <Text style={colorScheme === "dark" ? styles.textLight : styles.textDark}>게시글 2</Text>
-                </TouchableOpacity>
-            </View>
-            <View>
-                <TouchableOpacity onPress={() => router.push(`/@santj5811/post/3`)}>
-                    <Text style={colorScheme === "dark" ? styles.textLight : styles.textDark}>게시글 3</Text>
-                </TouchableOpacity>
-            </View>
+            <FlashList data={posts} renderItem={({item}) => <Post item={item}/>}/>
+
         </View>
     );
 }
