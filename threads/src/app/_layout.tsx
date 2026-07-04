@@ -7,7 +7,7 @@ import {Asset} from "expo-asset";
 import {Animated, StyleSheet, View} from "react-native";
 import Constants from "expo-constants";
 import * as SplashScreen from "expo-splash-screen";
-import Toast from "react-native-toast-message";
+import Toast, {BaseToast} from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync().catch(() => {
 
@@ -159,13 +159,40 @@ function AnimatedSplashScreen({children, image}: { children: React.ReactNode, im
 }
 
 export default function RootLayout() {
+
+    const toastConfig = {
+        customToast: (props: any) => (
+            <BaseToast
+                style={{
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    height: 40,
+                    borderLeftWidth: 0,
+                    shadowOpacity: 0,
+                    justifyContent: "center",
+                }}
+                contentContainerStyle={{
+                    paddingHorizontal: 16,
+                    alignItems: "center",
+                    height: 40,
+                }}
+                text1Style={{
+                    color: "black",
+                    fontSize: 14,
+                    fontWeight: "500",
+                }}
+                text1={props.text1}
+                onPress={props.onPress}
+            />
+        ),
+    };
     return (
         <AnimatedAppLoader>
             <Stack screenOptions={{headerShown: false}}>
                 <Stack.Screen name="(tabs)"/>
                 <Stack.Screen name="modal" options={{presentation: "modal"}}/>
             </Stack>
-            <Toast/>
+            <Toast config={toastConfig}/>
         </AnimatedAppLoader>
     )
 }

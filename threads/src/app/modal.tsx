@@ -83,12 +83,13 @@ export default function Modal() {
         }).then(res => res.json())
             .then((data) => {
                 const post = data.posts[0];
-                router.replace(`/@${user?.id}/post/${post.id}`);
+
                 Toast.hide();
                 Toast.show({
                     text1: "Posted successfully!",
                     type: "success",
                     visibilityTime: 5000,
+                    onPress: () => router.replace(`/@${user?.id}/post/${post.id}`)
                 })
             }).catch((err) => {
             console.log("post error", err);
