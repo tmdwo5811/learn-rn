@@ -19,7 +19,7 @@ declare global {
     }
 }
 
-let zerocho: User;
+let zerocho;
 
 if (__DEV__) {
     if (window.server) {
@@ -185,18 +185,39 @@ if (__DEV__) {
                 }
                 return posts.slice(targetIndex + 1, targetIndex + 11);
             });
-
             this.get("/posts/:id", (schema, request) => {
-                const post = schema.find("post", request.params.id);
-                const comments = schema.all("post").models.slice(0, 10);
+                return schema.find("post", request.params.id);
+            });
+            this.get("/posts/:id/comments", (schema, request) => {
+                const comments = schema
+                    .all("post")
+                    .models.sort((a, b) => parseInt(b.id) - parseInt(a.id));
+                let targetIndex = -1;
+                if (request.queryParams.cursor) {
+                    targetIndex = comments.findIndex(
+                        (v) => v.id === request.queryParams.cursor
+                    );
+                }
+                const page = comments.slice(targetIndex + 1, targetIndex + 11);
                 return {
-                    post: post ? {...post.attrs, user: (post as any).user?.attrs} : null,
-                    comments: comments.map((comment: any) => ({
+                    comments: page.map((comment: any) => ({
                         ...comment.attrs,
                         user: comment.user?.attrs,
                     })),
                 };
             });
+
+            // this.get("/posts/:id", (schema, request) => {
+            //     const post = schema.find("post", request.params.id);
+            //     const comments = schema.all("post").models.slice(0, 10);
+            //     return {
+            //         post: post ? {...post.attrs, user: (post as any).user?.attrs} : null,
+            //         comments: comments.map((comment: any) => ({
+            //             ...comment.attrs,
+            //             user: comment.user?.attrs,
+            //         })),
+            //     };
+            // });
 
             this.get("/activity", (schema: any, request) => {
                 const typeFilter = (request.queryParams.type as string) || "all";
@@ -237,6 +258,26 @@ if (__DEV__) {
                 });
 
                 return new Response(200, {}, {activities: result});
+            });
+
+            this.get("/users/:id", (schema, request) => {
+                return schema.find("user", request.params.id.slice(1));
+            });
+
+            this.get("/users/:id/:type", (schema, request) => {
+                let posts = schema.all("post");
+                if (request.params.type === "threads") {
+                    posts = posts.filter((post) => post.user?.id === request.params.id);
+                } else if (request.params.type === "reposts") {
+                    posts = posts.filter((post) => post.user?.id !== request.params.id);
+                }
+                let targetIndex = -1;
+                if (request.queryParams.cursor) {
+                    targetIndex = posts.models.findIndex(
+                        (v) => v.id === request.queryParams.cursor
+                    );
+                }
+                return posts.slice(targetIndex + 1, targetIndex + 11);
             });
 
             this.post("/login", (schema, request) => {
