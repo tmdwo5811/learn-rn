@@ -1,4 +1,4 @@
-import {Tabs, useRouter} from "expo-router";
+import {Tabs, usePathname, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import React, {useContext, useRef, useState} from "react";
 import {Modal, View, Text, TouchableOpacity, Pressable, StyleSheet, Animated} from "react-native";
@@ -49,6 +49,7 @@ export default function TabLayout() {
     const {user, login, logout} = useContext(AuthContext);
     const isLoggedIn = !!user;
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const pathname = usePathname();
     const openLoginModal = () => {
         setIsLoginModalOpen(true);
     }
@@ -80,6 +81,7 @@ export default function TabLayout() {
                                 name="home"
                                 size={24}
                                 color={focused ? "black" : "gray"}/>
+
                         )
                     }}
                 />
@@ -146,6 +148,7 @@ export default function TabLayout() {
                                 openLoginModal();
                                 return;
                             }
+                            router.navigate(`/@${user?.id}`)
                         }
                     }}
                     options={{
@@ -154,7 +157,7 @@ export default function TabLayout() {
                             <Ionicons
                                 name="person-outline"
                                 size={24}
-                                color={focused ? "black" : "gray"}
+                                color={focused && user?.id === pathname?.slice(2) ? "black" : "gray"}
                             />
                         ),
                     }}
