@@ -12,18 +12,30 @@ export default function Index() {
     useEffect(() => {
         console.log("path", path);
         setPosts([]);
-        fetch(`/posts?type=${path.split("/").pop()}`, {})
+        fetch(`http://localhost:3000/posts?type=${path.split("/").pop()}`, {})
             .then((res) => res.json())
             .then((data) => {
-                setPosts(data);
+                setPosts(data.posts);
             })
     }, [path]);
+
+    const onEndReached = () => {
+        if (posts.length <= 0) {
+            return;
+        }
+        
+        fetch(`http://localhost:3000/posts?type=${path.split("/").pop()}&cursor=${posts.at(-1)?.id}`, {})
+            .then((res) => res.json())
+            .then((data) => {
+                setPosts([...posts, ...data.posts]);
+            });
+    }
 
     const [posts, setPosts] = useState<PostType[]>([]);
 
     return (
         <View style={[styles.container, colorScheme === "dark" ? styles.containerDark : styles.containerLight]}>
-            <FlashList data={posts} renderItem={({item}) => <Post item={item}/>}/>
+            <FlashList data={posts} renderItem={({item}) => <Post item={item}/>} onEndReached={onEndReached}/>
 
         </View>
     );

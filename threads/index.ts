@@ -168,9 +168,14 @@ if (__DEV__) {
             });
 
             this.get("/posts", (schema, request) => {
-                console.log("user.all", schema.all("user").models);
-                const cursor = parseInt((request.queryParams.cursor as string) || "0");
-                return schema.all("post").slice(cursor, cursor + 10);
+                const posts = schema.all("post");
+                let targetIndex = -1;
+                if (request.queryParams.cursor) {
+                    targetIndex = posts.models.findIndex((v) => {
+                        return v.id === request.queryParams.cursor;
+                    });
+                }
+                return schema.all("post").slice(targetIndex + 1, targetIndex + 11);
             });
 
             this.get("/posts/:id", (schema, request) => {
