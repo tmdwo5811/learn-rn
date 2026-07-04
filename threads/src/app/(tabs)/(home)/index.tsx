@@ -3,6 +3,7 @@ import {useRouter, usePathname} from "expo-router";
 import {FlashList} from "@shopify/flash-list";
 import {useCallback, useEffect, useState} from "react";
 import Post, {Post as PostType} from "@/components/Post";
+import * as Haptics from "expo-haptics";
 // 주소는 변경되지만 화면은 공유해서 사용하는 영역
 export default function Index() {
     const colorScheme = useColorScheme();
@@ -33,6 +34,7 @@ export default function Index() {
 
     const onRefresh = () => {
         setRefreshing(true);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         fetch(`http://localhost:3000/posts`, {})
             .then((res) => res.json())
             .then((data) => {
