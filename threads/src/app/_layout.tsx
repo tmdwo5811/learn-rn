@@ -17,6 +17,9 @@ export interface User {
     description: string;
     name: string;
     profileImageUrl: string;
+    link: string;
+    showInstagramBadge: boolean;
+    isPrivate: boolean
 }
 
 
