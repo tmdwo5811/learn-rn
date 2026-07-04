@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     Alert,
     FlatList,
@@ -17,10 +17,11 @@ import {useSafeAreaInsets} from "react-native-safe-area-context";
 import * as Location from "expo-location";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
+import {AuthContext} from "@/app/_layout";
 
 interface Thread {
     id: string;
-    text: string;
+    content: string;
     hashtag?: string;
     location?: [number, number];
     imageUrls: string[]; // 경로만 입력하면 됨, blob, file 불필요
@@ -49,11 +50,12 @@ export function ListFooter({canAddThread, addThread}: { canAddThread: boolean; a
 export default function Modal() {
     const router = useRouter();
     const [threads, setThreads] = useState<Thread[]>([
-        {id: Date.now().toString(), text: "", imageUrls: []},
+        {id: Date.now().toString(), content: "", imageUrls: []},
     ]);
     const insets = useSafeAreaInsets();
     const [replyOption, setReplyOption] = useState("Anyone");
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+    const {user} = useContext(AuthContext);
     const [activeHashTagThreadId, setActiveHashTagThreadId] = useState<string | null>(null);
     const [isPosting, setIsPosting] = useState(false);
 
@@ -74,15 +76,15 @@ export default function Modal() {
             })
         }).then(res => res.json())
             .then((data) => {
-                console.log("Post created:", data);
-                console.log("imageUrls:", data.posts.map((post: any) => post.imageUrls));
+                const post = data.posts[0];
+                router.replace(`/@${user?.id}/post/${post.id}`);
             })
     };
 
     const updateThreadText = (id: string, text: string) => {
         setThreads((prevThreads =>
                 prevThreads.map((thread) =>
-                    thread.id === id ? {...thread, text} : thread
+                    thread.id === id ? {...thread, content: text} : thread
                 )
         ));
     };
@@ -96,8 +98,8 @@ export default function Modal() {
         setActiveHashTagThreadId(null);
     }
 
-    const canAddThread = (threads.at(-1)?.text.trim().length ?? 0) > 0 || (threads.at(-1)?.imageUrls.length ?? 0) > 0;
-    const canPost = threads.every((thread) => thread.text.trim().length > 0 || thread.imageUrls.length > 0);
+    const canAddThread = (threads.at(-1)?.content.trim().length ?? 0) > 0 || (threads.at(-1)?.imageUrls.length ?? 0) > 0;
+    const canPost = threads.every((thread) => thread.content.trim().length > 0 || thread.imageUrls.length > 0);
 
     const addImageToThread = (id: string, uri: string) => {
     };
@@ -315,7 +317,7 @@ export default function Modal() {
                     style={styles.input}
                     placeholder={"What's new?"}
                     placeholderTextColor="#999"
-                    value={item.text}
+                    value={item.content}
                     onChangeText={(text) => updateThreadText(item.id, text)}
                     multiline
                 />
@@ -400,7 +402,7 @@ export default function Modal() {
                         if (canAddThread) {
                             setThreads((prevThreads) => [
                                 ...prevThreads,
-                                {id: Date.now().toString(), text: "", imageUrls: []},
+                                {id: Date.now().toString(), content: "", imageUrls: []},
                             ])
                         }
                     }}/>

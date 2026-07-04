@@ -23,12 +23,12 @@ export default function PostScreen() {
     const {username, postId} = useLocalSearchParams();
     const [post, setPost] = useState<PostType | null>(null);
     const [comments, setComments] = useState<PostType[]>([]);
-
     useEffect(() => {
         fetch(`http://localhost:3000/posts/${postId}`)
             .then((res) => res.json())
             .then((data) => {
-                setPost(data.post);
+                console.log(data)
+                setPost(data.posts);
             });
         fetch(`http://localhost:3000/posts/${postId}/comments`)
             .then((res) => res.json())

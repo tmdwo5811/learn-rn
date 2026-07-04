@@ -142,6 +142,7 @@ if (__DEV__) {
                 const {posts} = JSON.parse(request.requestBody);
                 posts.forEach((post: any) => {
                     schema.create("post", {
+                        id: post.id,
                         content: post.content,
                         imageUrls: post.imageUrls,
                         location: post.location,
