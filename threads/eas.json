@@ -1,4 +1,5 @@
 {
+  "projectId": "threads-clone-coding",
   "cli": {
     "version": ">= 20.5.0",
     "appVersionSource": "remote"
